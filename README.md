@@ -30,6 +30,11 @@ envsnap save myproject
 envsnap list
 ```
 
+**Show details of a specific snapshot:**
+```bash
+envsnap show myproject
+```
+
 **Diff two snapshots:**
 ```bash
 envsnap diff myproject staging
@@ -38,6 +43,11 @@ envsnap diff myproject staging
 **Restore a snapshot:**
 ```bash
 envsnap restore myproject
+```
+
+**Delete a snapshot:**
+```bash
+envsnap delete myproject
 ```
 
 **Export a snapshot to a `.env` file:**
