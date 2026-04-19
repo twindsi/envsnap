@@ -13,6 +13,17 @@ def cmd_capture(args: argparse.Namespace) -> None:
     print(f"Snapshot '{env['name']}' saved ({len(env['env'])} variables).")
 
 
+def cmd_show(args: argparse.Namespace) -> None:
+    """Print all variables stored in a snapshot."""
+    try:
+        env = load(args.name, snapshot_dir=args.dir)
+    except FileNotFoundError:
+        print(f"Snapshot '{args.name}' not found.", file=sys.stderr)
+        sys.exit(1)
+    for key, value in sorted(env["env"].items()):
+        print(f"{key}={value}")
+
+
 def cmd_list(args: argparse.Namespace) -> None:
     snapshots = list_snapshots(snapshot_dir=args.dir)
     if not snapshots:
@@ -58,6 +69,11 @@ def build_parser() -> argparse.ArgumentParser:
     # list
     p_list = sub.add_parser("list", help="List saved snapshots.")
     p_list.set_defaults(func=cmd_list)
+
+    # show
+    p_show = sub.add_parser("show", help="Show variables in a snapshot.")
+    p_show.add_argument("name", help="Snapshot name to display.")
+    p_show.set_defaults(func=cmd_show)
 
     # diff
     p_diff = sub.add_parser("diff", help="Diff two snapshots.")
