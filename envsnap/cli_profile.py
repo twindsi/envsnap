@@ -9,6 +9,7 @@ from envsnap.profile import add_to_profile, remove_from_profile, get_profile, li
 
 
 def cmd_profile(args: argparse.Namespace) -> None:
+    """Dispatch profile subcommands based on parsed arguments."""
     snapshot_dir = Path(args.snapshot_dir)
 
     if args.profile_action == "add":
@@ -39,18 +40,25 @@ def cmd_profile(args: argparse.Namespace) -> None:
             print(f"[error] {result.message}")
 
     elif args.profile_action == "list":
-        profiles = list_profiles(snapshot_dir)
-        if not profiles:
-            print("No profiles defined.")
-        else:
-            for name, members in profiles.items():
-                print(f"{name}: {', '.join(members)}")
+        _cmd_profile_list(snapshot_dir)
 
     else:
         print(f"[error] Unknown profile action: {args.profile_action}")
 
 
+def _cmd_profile_list(snapshot_dir: Path) -> None:
+    """Print all profiles and their members to stdout."""
+    profiles = list_profiles(snapshot_dir)
+    if not profiles:
+        print("No profiles defined.")
+    else:
+        for name, members in profiles.items():
+            member_str = ', '.join(members) if members else "(empty)"
+            print(f"{name}: {member_str}")
+
+
 def add_profile_subparser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the 'profile' command and its subcommands with the argument parser."""
     parser = subparsers.add_parser("profile", help="Manage snapshot profiles")
     parser.add_argument("--snapshot-dir", default=".envsnap", help="Snapshot storage directory")
 
